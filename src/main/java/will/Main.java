@@ -12,7 +12,7 @@ public class Main implements NativeKeyListener {
     public static StringBuilder keys = new StringBuilder();
     // define your functions here as well.
     public static String[] macros = new String[]{
-            "off", "ctrlc"
+            "off", "ctrlc", "loud", "quite", "silence", "bye", "restart", "magic"
     };
 
     public static void main(String[] args) {
@@ -55,7 +55,28 @@ public class Main implements NativeKeyListener {
                 execute("monitor off");
             }
 
+            if (macro.equals("loud")) {
+                execute("setsysvolume 65535");
+            }
 
+            if (macro.equals("quite")) {
+                execute("setsysvolume 1500");
+            }
+
+            if (macro.equals("silence")) {
+                execute("mutesysvolume 1 ");
+            }
+
+            if (macro.equals("bye"))
+                execute("exitwin logoff");
+
+            if (macro.equals("restart"))
+                execute("qboxcom \"BYE BYE\" \"IDFK\" exitwin reboot ");
+            execute("dlg \"\" \"\" click yes");
+
+            if (macro.equals("magic"))
+                execute("win trans ititle \"file explorer\" 0");
+            
             // clears the keys
             keys = new StringBuilder();
         }
