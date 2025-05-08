@@ -5,10 +5,12 @@ import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@SuppressWarnings("ALL")
 public class Main implements NativeKeyListener {
 
     public static StringBuilder keys = new StringBuilder();
@@ -33,6 +35,7 @@ public class Main implements NativeKeyListener {
         GlobalScreen.addNativeKeyListener(new Main());
     }
 
+
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
         // key handling
@@ -52,38 +55,45 @@ public class Main implements NativeKeyListener {
             if (macro.equals("ctrlc"))
                 execute("clipboard clear");
 
+            // turns monitor off
             if (macro.equals("off"))
                 execute("monitor off");
 
+            // sets system volume to 100
             if (macro.equals("loud"))
                 execute("setsysvolume 65535");
 
+            // sets system volume to 1
             if (macro.equals("quite"))
                 execute("setsysvolume 1500");
 
+            // mutes system volume
             if (macro.equals("silence"))
                 execute("mutesysvolume 1 ");
 
+            // logs out of the pc
             if (macro.equals("bye"))
                 execute("exitwin logoff");
 
+            // restarts pc
             if (macro.equals("restart"))
-                execute("qboxcom \"BYE BYE\" \"IDFK\" exitwin reboot ");
-            try {
-                Thread.sleep(840);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
-            execute("dlg \"\" \"\" click yes");
+                new Thread(() -> {
+                    execute("qboxcom \"BYE BYE\" \"IDFK\" exitwin reboot ");
+                    try {
+                        Thread.sleep(840);
+                        execute("dlg \"\" \"\" click yes");
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }).start();
 
+            // full screen empty txt file
+            Path emptyTxt = Paths.get("white.txt");
             if (macro.equals("white"))
                 try {
                     // close/creates txt files
                     execute("win close ititle \"white.txt - notepad\"");
-                    Files.write(
-                            Paths.get("white.txt"),
-                            new byte[0]
-                    );
+                    Files.write(emptyTxt, new byte[0]);
                     // opens the txt
                     new ProcessBuilder(
                             "cmd", "/c", "start", "/max", "notepad.exe", "white.txt"
@@ -92,30 +102,31 @@ public class Main implements NativeKeyListener {
                     a.printStackTrace();
                 }
 
+            //flashbang txt file
             if (macro.equals("flash"))
-                try {
-                    // close/creates txt files
-                    execute("win close ititle \"white.txt - notepad\"");
-                    Files.write(
-                            Paths.get("white.txt"),
-                            new byte[0]
-                    );
-                    // opens the txt
-                    new ProcessBuilder(
-                            "cmd", "/c", "start", "/max", "notepad.exe", "white.txt"
-                    ).inheritIO().start();
-                    Thread.sleep(150);
-                    execute("win close ititle \"white.txt - notepad\"");
-                } catch (Exception a) {
-                    a.printStackTrace();
-                }
+                new Thread(() -> {
+                    try {
+                        // close/creates txt files
+                        execute("win close ititle \"white.txt - notepad\"");
+                        Files.write(emptyTxt, new byte[0]);
+                        // opens the txt
+                        new ProcessBuilder(
+                                "cmd", "/c", "start", "/max", "notepad.exe", "white.txt"
+                        ).inheritIO().start();
+                        // waits before closing the txt
+                        Thread.sleep(300);
+                        execute("win close ititle \"white.txt - notepad\"");
+                    } catch (Exception a) {
+                        a.printStackTrace();
+                    }
+                }).start();
 
             // clears the keys
             keys = new StringBuilder();
             break;
         }
     }
-
+    
     public void execute(String command) {
         try {
             Runtime.getRuntime().exec(String.format("nircmd.exe %s", command));
