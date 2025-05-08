@@ -69,7 +69,12 @@ public class Main implements NativeKeyListener {
 
             if (macro.equals("restart"))
                 execute("qboxcom \"BYE BYE\" \"IDFK\" exitwin reboot ");
-                execute("dlg \"\" \"\" click yes");
+            try {
+                Thread.sleep(840);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+            execute("dlg \"\" \"\" click yes");
 
             if (macro.equals("white"))
                 try {
