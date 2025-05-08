@@ -1,4 +1,4 @@
-package will;
+package T1G37;
 
 import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
