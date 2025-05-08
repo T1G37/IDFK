@@ -4,6 +4,8 @@ import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,7 +14,7 @@ public class Main implements NativeKeyListener {
     public static StringBuilder keys = new StringBuilder();
     // define your functions here as well.
     public static String[] macros = new String[]{
-            "off", "ctrlc", "loud", "quite", "silence", "bye", "restart", "magic"
+            "off", "ctrlc", "loud", "quite", "silence", "bye", "restart", "white", "flash"
     };
 
     public static void main(String[] args) {
@@ -47,38 +49,65 @@ public class Main implements NativeKeyListener {
             // all code below runs after it finds a valid macro, this is where you add your commands.
             // https://www.nirsoft.net/utils/nircmd.html
 
-            if (macro.equals("ctrlc")) {
+            if (macro.equals("ctrlc"))
                 execute("clipboard clear");
-            }
 
-            if (macro.equals("off")) {
+            if (macro.equals("off"))
                 execute("monitor off");
-            }
 
-            if (macro.equals("loud")) {
+            if (macro.equals("loud"))
                 execute("setsysvolume 65535");
-            }
 
-            if (macro.equals("quite")) {
+            if (macro.equals("quite"))
                 execute("setsysvolume 1500");
-            }
 
-            if (macro.equals("silence")) {
+            if (macro.equals("silence"))
                 execute("mutesysvolume 1 ");
-            }
 
             if (macro.equals("bye"))
                 execute("exitwin logoff");
 
             if (macro.equals("restart"))
                 execute("qboxcom \"BYE BYE\" \"IDFK\" exitwin reboot ");
-            execute("dlg \"\" \"\" click yes");
+                execute("dlg \"\" \"\" click yes");
 
-            if (macro.equals("magic"))
-                execute("win trans ititle \"file explorer\" 0");
-            
+            if (macro.equals("white"))
+                try {
+                    // close/creates txt files
+                    execute("win close ititle \"white.txt - notepad\"");
+                    Files.write(
+                            Paths.get("white.txt"),
+                            new byte[0]
+                    );
+                    // opens the txt
+                    new ProcessBuilder(
+                            "cmd", "/c", "start", "/max", "notepad.exe", "white.txt"
+                    ).inheritIO().start();
+                } catch (Exception a) {
+                    a.printStackTrace();
+                }
+
+            if (macro.equals("flash"))
+                try {
+                    // close/creates txt files
+                    execute("win close ititle \"white.txt - notepad\"");
+                    Files.write(
+                            Paths.get("white.txt"),
+                            new byte[0]
+                    );
+                    // opens the txt
+                    new ProcessBuilder(
+                            "cmd", "/c", "start", "/max", "notepad.exe", "white.txt"
+                    ).inheritIO().start();
+                    Thread.sleep(150);
+                    execute("win close ititle \"white.txt - notepad\"");
+                } catch (Exception a) {
+                    a.printStackTrace();
+                }
+
             // clears the keys
             keys = new StringBuilder();
+            break;
         }
     }
 
