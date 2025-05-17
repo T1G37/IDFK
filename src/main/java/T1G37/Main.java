@@ -16,7 +16,7 @@
         public static StringBuilder keys = new StringBuilder();
         // define your functions here as well.
         public static String[] macros = new String[]{
-                "off", "ctrlc", "loud", "quite", "silence", "bye", "restart", "white", "flash"
+                "off", "ctrlc", "loud", "quiet", "silence", "bye", "restart", "white", "flash"
         };
 
         public static void main(String[] args) {
@@ -64,7 +64,7 @@
                     executeNirCmd("setsysvolume 65535");
 
                 // sets system volume to 1
-                if (macro.equals("quite"))
+                if (macro.equals("quiet"))
                     executeNirCmd("setsysvolume 1500");
 
                 // mutes system volume
